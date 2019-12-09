@@ -161,6 +161,12 @@ std::map<std::vector<int>, std::vector<int>> astar(std::vector<std::vector<int>>
             }
         }
     }
+    if (q.empty())
+    {
+        std::cout << "No path found" << std::endl;
+        std::map<std::vector<int>, std::vector<int>> nm;
+        return nm;
+    }
     print(graph);
     return m;
 }
@@ -189,14 +195,19 @@ void getPath(std::map<std::vector<int>, std::vector<int>> m,const std::vector<in
 
 int main()
 {
-    std::vector<std::vector<int>> graph = {{0, 0, 0, 0, 0},
+    std::vector<std::vector<int>> graph = {{1, 0, 0, 0, 0},
                                            {0, 1, 1, 1, 0},
                                            {0, 0, 0, 1, 0},
                                            {0, 0, 0, 1, 0},
-                                           {0, 0, 0, 0, 0}};
+                                           {0, 0, 0, 1, 0}};
 
     print(graph);
     std::vector<int> start = {0, 0}, goal = {4, 4};
+    if (graph[start[0]][start[1]] == 1 or graph[goal[0]][goal[1]] == 1)
+    {
+        std::cout << "There cannot be an obstacle at the start position or the goal position" << std::endl;
+        return 0;
+    }
     // std::vector<std::vector<int>> h = getHeuristic(graph, goal, 'c');
     // print(h);
     std::map<std::vector<int>, std::vector<int>> pathnodes = astar(graph, start, goal, 'c');
@@ -207,7 +218,10 @@ int main()
     //     printvector(it->second);
     //     std::cout << std::endl;
     // }
-    getPath(pathnodes, goal);
+    if (!pathnodes.empty())
+    {
+        getPath(pathnodes, goal);
+    }
 
-
+    return 0;
 }
