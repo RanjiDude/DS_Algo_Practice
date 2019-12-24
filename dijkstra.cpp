@@ -193,6 +193,7 @@ std::vector<char> dijkstra(graph g, vertex &start, vertex &goal)
     }
     else
     {
+        std::cout << "No path found" << std:: endl;
         return {};
     }
 }
@@ -205,6 +206,7 @@ int main()
     vertex* d = new vertex('d');
     vertex* e = new vertex('e');
     vertex* f = new vertex('f');
+    vertex* h = new vertex('h');
 
     edge* ab = new edge(*a, *b, 4);
     edge* ba = new edge(*b, *a, 4);
@@ -241,6 +243,7 @@ int main()
     g.vertices.push_back(d);
     g.vertices.push_back(e);
     g.vertices.push_back(f);
+    g.vertices.push_back(h);
     
     g.edges.push_back(ab);
     g.edges.push_back(ac);
