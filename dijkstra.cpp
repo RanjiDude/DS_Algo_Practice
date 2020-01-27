@@ -2,7 +2,7 @@
 #include <vector>
 #include <tuple>
 #include <queue>
-#include <map>
+#include <unordered_map>
 
 // Basic vertex structure in the graph (attributes: vertex/node name, visited status)
 struct vertex
@@ -116,7 +116,7 @@ void print_tuple(std::tuple<vertex*, int> t)
 }
 
 // Custom print functions for maps
-void print_map(const std::map<vertex*, std::tuple<vertex*, int>> &m)
+void print_map(const std::unordered_map<vertex*, std::tuple<vertex*, int>> &m)
 {
     for(auto x : m)
     {
@@ -142,7 +142,7 @@ std::vector<char> dijkstra(graph g, vertex &start, vertex &goal)
     std::vector<char> result;
     std::priority_queue<pq_elem, std::vector<pq_elem>, compare> pq;
     
-    std::map<vertex*, std::tuple<vertex*, int>> m;
+    std::unordered_map<vertex*, std::tuple<vertex*, int>> m;
     m.insert(std::pair<vertex*, std::tuple<vertex*, int>>(&start, {NULL, 0}));
 
     pq_elem next(start, 0);
