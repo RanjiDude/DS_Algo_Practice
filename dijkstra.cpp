@@ -4,7 +4,7 @@
 #include <queue>
 #include <map>
 
-
+// Basic vertex structure in the graph (attributes: vertex/node name, visited status)
 struct vertex
 {
     char name;
@@ -12,6 +12,42 @@ struct vertex
     vertex(char n);
 };
 
+vertex::vertex(char n)
+{
+    vertex::name = n;
+}
+
+// Basic edge structure in the graph (attributes: from vertex's pointer, to vertex's pointer,
+// distance between the two vertices)
+struct edge
+{
+    vertex* from;
+    vertex* to;
+    int distance;
+    edge(vertex &f, vertex &t, int d)
+    {
+        from = &f;
+        to = &t;
+        distance = d;
+    }
+};
+
+// Basic graph structure (attributes: vector of all vertices, vector of all edges)
+struct graph
+{
+    std::vector<vertex*> vertices;
+    std::vector<edge*> edges;
+    void graph_init()
+    {
+        for (auto x: vertices)
+        {
+            x->visited = 0;
+        }
+    }
+};
+
+// Basic structure of elements getting stored in the priority queue
+// Makes it easier to compare two elements during sorting
 struct pq_elem
 {   
     vertex* v;
@@ -30,6 +66,7 @@ struct pq_elem
     }
 };
 
+// Comparision function for priority queue
 struct compare
 {
     bool operator()(const pq_elem &a, const pq_elem &b)
@@ -38,6 +75,7 @@ struct compare
     }
 };
 
+// Custom 1D vector print function
 template <class T>
 void print_vect(std::vector<T> vec)
 {
@@ -54,6 +92,7 @@ void print_vect(std::vector<T> vec)
     std::cout << std::endl;
 }
 
+// Custom print function for priority queue
 void print_pq(std::priority_queue<pq_elem, std::vector<pq_elem>, compare> pq)
 {
     while(!pq.empty())
@@ -69,12 +108,14 @@ void print_pq(std::priority_queue<pq_elem, std::vector<pq_elem>, compare> pq)
     std::cout << std::endl;
 }
 
+// Custom print function for tuples
 void print_tuple(std::tuple<vertex*, int> t)
 {
     auto x = t;
     std::cout << "{" << std::get<0>(x)->name << ", " << std::get<1>(x) << "}";
 }
 
+// Custom print functions for maps
 void print_map(const std::map<vertex*, std::tuple<vertex*, int>> &m)
 {
     for(auto x : m)
@@ -95,39 +136,7 @@ void print_map(const std::map<vertex*, std::tuple<vertex*, int>> &m)
     std::cout << std::endl;
 }
 
-vertex::vertex(char n)
-{
-    vertex::name = n;
-}
-
-struct edge
-{
-    vertex* from;
-    vertex* to;
-    int distance;
-    edge(vertex &f, vertex &t, int d)
-    {
-        from = &f;
-        to = &t;
-        distance = d;
-    }
-};
-
-struct graph
-{
-    std::vector<vertex*> vertices;
-    std::vector<edge*> edges;
-    void graph_init()
-    {
-        for (auto x: vertices)
-        {
-            x->visited = 0;
-        }
-    }
-};
-
-
-
+// MAIN DIJKSTRA'S ALGORTIHM FUNCTION
 std::vector<char> dijkstra(graph g, vertex &start, vertex &goal)
 {
     std::vector<char> result;
@@ -200,6 +209,8 @@ std::vector<char> dijkstra(graph g, vertex &start, vertex &goal)
 
 int main()
 {
+    
+    // Creating all vertices in the graph
     vertex* a = new vertex('a');
     vertex* b = new vertex('b');
     vertex* c = new vertex('c');
@@ -208,6 +219,9 @@ int main()
     vertex* f = new vertex('f');
     vertex* h = new vertex('h');
 
+    // Creating all edges in the graph and connecting different vertices
+    // Edges in this graph are bi-directional i.e. we can move from a to b and b to a as well
+    // This need not be the case for all vertices. Feel free to change as you see fit.
     edge* ab = new edge(*a, *b, 4);
     edge* ba = new edge(*b, *a, 4);
     
@@ -235,8 +249,10 @@ int main()
     edge* ef = new edge(*e, *f, 5);
     edge* fe = new edge(*f, *e, 5);
     
+    // Initializing the graph
     graph g;
     
+    // Adding all created vertices to the vertices vector in the graph
     g.vertices.push_back(a);
     g.vertices.push_back(b);
     g.vertices.push_back(c);
@@ -245,6 +261,7 @@ int main()
     g.vertices.push_back(f);
     g.vertices.push_back(h);
     
+    // Adding all created edges to the edges vector in the graph
     g.edges.push_back(ab);
     g.edges.push_back(ac);
     g.edges.push_back(bc);
