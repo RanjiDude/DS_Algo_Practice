@@ -127,21 +127,7 @@ bool uniValue(TreeNode *root)
 
 int main()
 {
-    TreeNode a(1);
-    TreeNode b(2);
-    TreeNode c(3);
-    TreeNode d(4);
-    TreeNode e(5);
-    TreeNode f(6);
-    TreeNode g(7);
-
-    // TreeNode a(1);
-    // TreeNode b(1);
-    // TreeNode c(1);
-    // TreeNode d(1);
-    // TreeNode e(1);
-    // TreeNode f(1);
-    // TreeNode g(1);
+    TreeNode a(1), b(2), c(3), d(4), e(5), f(6), g(7);
 
     a.left = &b;
     a.right = &c;
@@ -149,10 +135,6 @@ int main()
     b.right = &e;
     c.left = &f;
     c.right = &g;
-
-    // std::cout << a.val << std::endl;
-    // std::cout << a.left->val << std::endl;
-    // std::cout << a.right->right->val << std::endl;
 
     // BFS(&a);
     // DFS_Iterative_Preorder(&a);
