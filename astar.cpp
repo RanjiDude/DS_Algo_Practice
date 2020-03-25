@@ -4,8 +4,9 @@
 #include <queue>
 #include <limits>
 #include <algorithm>
-#include "math.h"
+#include <cmath>
 
+// compare function for priority_queue
 class compare
 {
     public:
@@ -15,6 +16,7 @@ class compare
         }
 };
 
+// print function for printing 2D vectors
 void print(std::vector<std::vector<int>> &graph)
 {
     for (auto i: graph)
@@ -28,6 +30,7 @@ void print(std::vector<std::vector<int>> &graph)
     std::cout << std::endl;
 }
 
+// print functions for priority queues
 void printpq(std::priority_queue<std::vector<int>, std::vector<std::vector<int>>, compare> q)
 {
     while(!q.empty())
@@ -39,6 +42,7 @@ void printpq(std::priority_queue<std::vector<int>, std::vector<std::vector<int>>
     std::cout << std::endl;
 }
 
+// print function for 1D vectors
 void printvector(const std::vector<int> &v)
 {
     for (auto i:v)
@@ -48,6 +52,7 @@ void printvector(const std::vector<int> &v)
     // std::cout << std::endl;
 }
 
+// function to search for valid neighboring nodes in a graph. Valid means that node value == 0
 std::vector<std::vector<int>> getNeighbors(const std::vector<std::vector<int>> &graph, const std::vector<int> &node)
 {
     std::vector<std::vector<int>> neighbors;
@@ -65,6 +70,7 @@ std::vector<std::vector<int>> getNeighbors(const std::vector<std::vector<int>> &
     return neighbors;
 }
 
+// function to calculate the heuristic based on three different kind of distances (Chebyshev, Euclidean or Manhattan)
 std::vector<std::vector<int>> getHeuristic(std::vector<std::vector<int>> graph, const std::vector<int> &goal, char distance)
 {
     std::vector<std::vector<int>> h;
@@ -89,19 +95,18 @@ std::vector<std::vector<int>> getHeuristic(std::vector<std::vector<int>> graph, 
         for (auto n : nebs)
         {
             int heur;
-            if (distance == 'c')
+            if (distance == 'c')        // Chebyshev Distance heuristic_distance = max(|x2-x1|, |y2-y1|)
             {
                 heur = std::max(std::abs(goal[0]-n[0]), std::abs(goal[1]-n[1]));
             }
-            else if (distance == 'm')
+            else if (distance == 'm')       // Manhattan Distance heuristic_distance = |x2-x1| +  |y2-y1|
             {
                 heur = std::abs(goal[0]-n[0]) + std::abs(goal[1]-n[1]);
             }
-            // else if (distance == 'e')
-            // {
-            //     heur = std::pow(std::pow(goal[0]-n[0], 2) + std::pow(goal[1]-n[1], 2), 0.5);
-            // }
-            // q.push({heur, n[0], n[1]});
+            else if (distance == 'e')           // Euclidean Distance heuristic_distance = ([x2-x1]^2 + [y2-y1]^2)^(0.5)
+            {
+                heur = std::pow(std::pow(goal[0]-n[0], 2) + std::pow(goal[1]-n[1], 2), 0.5);
+            }
 
             if (graph[n[0]][n[1]] != -1)
             {
@@ -114,21 +119,23 @@ std::vector<std::vector<int>> getHeuristic(std::vector<std::vector<int>> graph, 
 }
 
 
-
+// A-star algorithm
 std::map<std::vector<int>, std::vector<int>> astar(std::vector<std::vector<int>> graph, const std::vector<int> &start, const std::vector<int> &goal, char distance)
 {
     std::vector<std::vector<int>> h = getHeuristic(graph, goal, distance);
+    std::cout << "Heuristic: " << std::endl;
     print(h);
+    
     std::map<std::vector<int>, std::vector<int>> m;
     m.insert(std::pair<std::vector<int>, std::vector<int>>(start, {}));
+    
     std::priority_queue<std::vector<int>, std::vector<std::vector<int>>, compare> q;
     q.push({0 + h[start[0]][start[1]], start[0], start[1]});
+    
     int s=0;
+    
     while(!q.empty())
     {
-        // std::cout << "Iteration " << s++ << std::endl;
-        // print(graph);
-        // printpq(q);
         std::vector<int> node = q.top();
         // std::cout << "Chosen Node: " << "[" << node[1] << "," << node[2] << "] " << std::endl;
         q.pop();
@@ -167,10 +174,11 @@ std::map<std::vector<int>, std::vector<int>> astar(std::vector<std::vector<int>>
         std::map<std::vector<int>, std::vector<int>> nm;
         return nm;
     }
-    print(graph);
+    // print(graph);
     return m;
 }
 
+// function to extract the path from the map calculated with the A-star algorithm
 void getPath(std::map<std::vector<int>, std::vector<int>> m,const std::vector<int> &goal)
 {
     std::vector<std::vector<int>> path;
@@ -195,22 +203,28 @@ void getPath(std::map<std::vector<int>, std::vector<int>> m,const std::vector<in
 
 int main()
 {
-    std::vector<std::vector<int>> graph = {{1, 0, 0, 0, 0},
+    std::vector<std::vector<int>> graph = {{0, 0, 0, 0, 0},
                                            {0, 1, 1, 1, 0},
                                            {0, 0, 0, 1, 0},
                                            {0, 0, 0, 1, 0},
                                            {0, 0, 0, 1, 0}};
 
+    std::cout << "Initial graph: " << std::endl;
     print(graph);
-    std::vector<int> start = {0, 0}, goal = {4, 4};
+    
+    std::vector<int> start = {0, 4}, goal = {0, 1};
+    
     if (graph[start[0]][start[1]] == 1 or graph[goal[0]][goal[1]] == 1)
     {
         std::cout << "There cannot be an obstacle at the start position or the goal position" << std::endl;
         return 0;
     }
+    
     // std::vector<std::vector<int>> h = getHeuristic(graph, goal, 'c');
     // print(h);
+    
     std::map<std::vector<int>, std::vector<int>> pathnodes = astar(graph, start, goal, 'c');
+    
     // for (auto it=pathnodes.begin(); it!=pathnodes.end(); ++it)
     // {
     //     printvector(it->first);
@@ -218,8 +232,10 @@ int main()
     //     printvector(it->second);
     //     std::cout << std::endl;
     // }
+    
     if (!pathnodes.empty())
     {
+        std::cout << "Path: " << std::endl;
         getPath(pathnodes, goal);
     }
 
